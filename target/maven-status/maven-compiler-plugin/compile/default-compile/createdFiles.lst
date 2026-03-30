@@ -1,0 +1,13 @@
+com\example\controller\AuthController.class
+com\example\controller\CategoryController.class
+com\example\Main.class
+com\example\controller\ErrorViewController.class
+com\example\controller\HomeController.class
+com\example\model\Role.class
+com\example\repository\CategoryRepository.class
+com\example\config\SecurityConfig.class
+com\example\repository\RoleRepository.class
+com\example\config\DataInitializer.class
+com\example\service\CategoryService.class
+com\example\service\CustomUserDetailsService.class
+com\example\model\Category.class

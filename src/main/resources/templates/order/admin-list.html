@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quan ly don hang</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <div class="wc-topbar">
+        <a class="wc-brand" th:href="@{/home}">Ban Hang Online</a>
+        <div class="wc-nav">
+            <a class="wc-chip" th:href="@{/home}">Home</a>
+            <a class="wc-chip" th:href="@{/products}">San pham</a>
+            <a class="wc-chip" th:href="@{/admin/orders}">Quan ly don hang</a>
+            <a class="wc-chip" th:href="@{/orders/my-orders}">Don hang cua toi</a>
+            <span class="wc-user" sec:authorize="isAuthenticated()">Xin chao, <b sec:authentication="name"></b></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;" sec:authorize="isAuthenticated()">
+                <button class="wc-chip" type="submit">Dang xuat</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="wc-hero">
+        <h1 class="wc-title">Quan ly don hang</h1>
+        <p class="wc-subtitle">Admin cap nhat trang thai xu ly don hang.</p>
+    </section>
+
+    <section class="wc-panel">
+        <div class="wc-alert success" th:if="${param.updated}">Cap nhat trang thai thanh cong.</div>
+        <div class="wc-alert" th:if="${param.updateError}">Khong cap nhat duoc trang thai.</div>
+
+        <div class="wc-table-wrap" th:if="${!#lists.isEmpty(orders)}">
+            <table class="wc-table">
+                <thead>
+                <tr>
+                    <th>Ma don</th>
+                    <th>Khach hang</th>
+                    <th>Ngay dat</th>
+                    <th>Tong tien</th>
+                    <th>Thanh toan</th>
+                    <th>Trang thai don</th>
+                    <th>Doi trang thai</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="o : ${orders}">
+                    <td th:text="${o.id}">1</td>
+                    <td th:text="${o.userAccount.username}">admin</td>
+                    <td th:text="${o.orderDate}">2026-03-30</td>
+                    <td th:text="${#numbers.formatDecimal(o.totalAmount, 1, 'COMMA', 0, 'POINT') + ' VND'}">2,000,000 VND</td>
+                    <td th:text="${o.paymentMethod}">COD</td>
+                    <td th:text="${o.paymentStatus}">PENDING_CONFIRMATION</td>
+                    <td>
+                        <form th:action="@{'/admin/orders/' + ${o.id} + '/status'}" method="post" style="display:flex; gap:8px; align-items:center;">
+                            <select name="orderStatus" class="wc-input" style="min-width:190px;">
+                                <option value="PENDING_CONFIRMATION" th:selected="${o.paymentStatus == 'PENDING_CONFIRMATION'}">PENDING_CONFIRMATION</option>
+                                <option value="CONFIRMED" th:selected="${o.paymentStatus == 'CONFIRMED'}">CONFIRMED</option>
+                                <option value="SHIPPING" th:selected="${o.paymentStatus == 'SHIPPING'}">SHIPPING</option>
+                                <option value="DELIVERED" th:selected="${o.paymentStatus == 'DELIVERED'}">DELIVERED</option>
+                                <option value="CANCELLED" th:selected="${o.paymentStatus == 'CANCELLED'}">CANCELLED</option>
+                            </select>
+                            <button class="wc-btn" type="submit">Luu</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="wc-empty" th:if="${#lists.isEmpty(orders)}">Chua co don hang nao.</div>
+    </section>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

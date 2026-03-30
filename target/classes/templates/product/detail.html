@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiet san pham</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <section class="wc-hero">
+        <h1 class="wc-title">Chi tiet san pham</h1>
+        <p class="wc-subtitle">Thong tin chi tiet san pham.</p>
+    </section>
+
+    <section class="wc-panel" th:if="${product != null}">
+        <div class="wc-detail-grid">
+            <img class="wc-detail-thumb" th:src="${product.image}" alt="product image" onerror="this.src='https://via.placeholder.com/640x360?text=Product'"/>
+            <div>
+                <div class="wc-kv"><b>Ma:</b> <span th:text="${product.id}"></span></div>
+                <div class="wc-kv"><b>Ten:</b> <span th:text="${product.name}"></span></div>
+                <div class="wc-kv"><b>Gia:</b> <span th:text="${#numbers.formatDecimal(product.price, 1, 'COMMA', 0, 'POINT') + ' VND'}"></span></div>
+                <div class="wc-kv"><b>Thuong hieu:</b> <span th:text="${product.brand}"></span></div>
+                <div class="wc-kv"><b>Danh muc:</b> <span th:text="${product.category.name}"></span></div>
+            </div>
+        </div>
+        <div class="wc-actions-end" style="margin-top:14px; justify-content:flex-start;">
+            <a class="wc-btn ghost" th:href="@{/products}">← Quay lai danh sach</a>
+        </div>
+    </section>
+
+    <section class="wc-panel" th:if="${product == null}">
+        Khong tim thay san pham.
+        <div class="wc-actions-end" style="margin-top:12px; justify-content:flex-start;"><a class="wc-btn ghost" th:href="@{/products}">← Quay lai danh sach</a></div>
+    </section>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

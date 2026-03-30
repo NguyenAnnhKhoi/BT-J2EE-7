@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-login">
+    <h2>Ban Hang Online</h2>
+    <p class="wc-subtle">Dang nhap vao he thong quan ly ban hang.</p>
+
+    <div class="wc-alert error" th:if="${param.error}">Sai tên đăng nhập hoặc mật khẩu</div>
+    <div class="wc-alert success" th:if="${param.logout}">Bạn đã đăng xuất</div>
+    <div class="wc-alert success" th:if="${param.registered}">Dang ky thanh cong. Vui long dang nhap.</div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="wc-field" style="margin-bottom:12px;">
+            <label for="username">Tài khoản</label>
+            <input class="wc-input" type="text" id="username" name="username" required>
+        </div>
+        <div class="wc-field" style="margin-bottom:14px;">
+            <label for="password">Mật khẩu</label>
+            <input class="wc-input" type="password" id="password" name="password" required>
+        </div>
+        <button class="wc-btn" type="submit" style="width:100%;">Đăng nhập</button>
+    </form>
+
+    <div class="wc-auth-link">
+        <a class="wc-btn ghost" th:href="@{/register}">Tao tai khoan khach hang</a>
+    </div>
+
+    <!-- <div style="margin-top:14px; color:#4a5461; font-size:13px;">Tai khoan mau</div>
+    <div class="wc-grid-2" style="margin-top:8px;">
+        <div class="wc-badge">ADMIN<br><b>admin / admin123</b></div>
+        <div class="wc-badge">USER<br><b>user001 / user001123</b></div>
+        <div class="wc-badge">USER<br><b>user002 / user002123</b></div>
+    </div> -->
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - Khong du quyen truy cap</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell" style="max-width:860px;">
+    <section class="wc-hero">
+        <h1 class="wc-title">403 - Forbidden</h1>
+        <p class="wc-subtitle">Ban khong co quyen truy cap trang nay.</p>
+    </section>
+
+    <section class="wc-panel" style="text-align:center;">
+        <p style="margin-top:0; color:#4b5767;">Tai khoan USER chi duoc vao Home, Gio hang va Don hang cua toi. Hay quay ve khu vuc phu hop.</p>
+        <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px;">
+            <a class="wc-btn" th:href="@{/home}">Ve Home</a>
+            <a class="wc-btn ghost" th:href="@{/orders/my-orders}" sec:authorize="hasRole('USER')">Don hang cua toi</a>
+            <a class="wc-btn ghost" th:href="@{/login}">Dang nhap tai khoan khac</a>
+        </div>
+    </section>
+</div>
+</body>
+</html>

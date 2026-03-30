@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Ban Hang Online</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <div class="wc-topbar">
+        <a class="wc-brand" th:href="@{/}">Ban Hang Online</a>
+        <form class="wc-topbar-search" th:action="@{/home}" method="get" data-realtime-search="true" style="display:flex; gap:8px; flex-wrap:wrap;">
+            <input class="wc-input" type="text" name="keyword" th:value="${keyword}" placeholder="Tim theo ten san pham...">
+            <select class="wc-input" name="categoryId" style="min-width:160px;">
+                <option th:value="''" th:selected="${categoryId == null}">Tat ca danh muc</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${categoryId != null and categoryId == cat.id}">
+                </option>
+            </select>
+            <select class="wc-input" name="sort" style="min-width:170px;">
+                <option value="default" th:selected="${sort == 'default'}">Mac dinh</option>
+                <option value="priceAsc" th:selected="${sort == 'priceAsc'}">Gia tang dan</option>
+                <option value="priceDesc" th:selected="${sort == 'priceDesc'}">Gia giam dan</option>
+            </select>
+            <button class="wc-btn" type="submit">Tim</button>
+        </form>
+        <div class="wc-nav">
+            <a class="wc-chip" th:href="@{/}">Home</a>
+            <a class="wc-chip" th:href="@{/products}" sec:authorize="hasRole('ADMIN')">San pham</a>
+            <a class="wc-chip" th:href="@{/cart}" sec:authorize="hasRole('USER')">Gio hang</a>
+            <a class="wc-chip" th:href="@{/orders/my-orders}" sec:authorize="hasRole('USER')">Don hang cua toi</a>
+            <a class="wc-chip" th:href="@{/categories}" sec:authorize="hasRole('ADMIN')">Danh muc</a>
+            <a class="wc-chip" th:href="@{/login}" sec:authorize="isAnonymous()">Dang nhap</a>
+            <span class="wc-user" sec:authorize="isAuthenticated()">Xin chao, <b sec:authentication="name"></b></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;" sec:authorize="isAuthenticated()">
+                <button class="wc-chip" type="submit">Dang xuat</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="wc-hero">
+        <h1 class="wc-title">Cua Hang San Pham</h1>
+        <p class="wc-subtitle">Trang Home tong hop san pham dang ban voi gia tien, thuong hieu, danh muc va hinh anh.</p>
+    </section>
+
+    <section class="wc-panel">
+        <div class="wc-alert success" th:if="${param.addedToCart}">Da them san pham vao gio hang.</div>
+
+        <div class="wc-toolbar">
+            <div class="wc-summary">Tong san pham hien co: <b th:text="${totalItems}">0</b></div>
+            <a class="wc-btn" th:href="@{/products/add}" sec:authorize="hasRole('ADMIN')">+ Them san pham</a>
+        </div>
+
+        <div class="wc-course-grid" th:if="${!#lists.isEmpty(products)}">
+            <article class="wc-course-card" th:each="p : ${products}">
+                <img class="wc-course-image" th:src="${p.image}" alt="product image" onerror="this.src='https://via.placeholder.com/640x360?text=Product'">
+                <div class="wc-course-body">
+                    <h3 class="wc-course-title" th:text="${p.name}">Ten san pham</h3>
+                    <div class="wc-meta-row"><span>Gia</span><b th:text="${#numbers.formatDecimal(p.price, 1, 'COMMA', 0, 'POINT') + ' VND'}">1,000,000 VND</b></div>
+                    <div class="wc-meta-row"><span>Thuong hieu</span><b th:text="${p.brand}">Apple</b></div>
+                    <div class="wc-meta-row"><span>Danh muc</span><b th:text="${p.category.name}">Dien tu</b></div>
+                    <div class="wc-actions" style="margin-top:12px;">
+                        <a class="wc-btn ghost" th:href="@{/products/{id}(id=${p.id})}" sec:authorize="hasRole('ADMIN')">Chi tiet</a>
+                        <form th:action="@{/cart/add/{id}(id=${p.id})}" method="post" data-add-to-cart="true" sec:authorize="hasRole('USER')">
+                            <input type="hidden" name="quantity" value="1">
+                            <button class="wc-btn" type="submit">Them vao gio</button>
+                        </form>
+                        <a class="wc-btn" th:href="@{/products/edit/{id}(id=${p.id})}" sec:authorize="hasRole('ADMIN')">Sua</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <div class="wc-empty" th:if="${#lists.isEmpty(products)}">
+            Khong tim thay san pham phu hop tu khoa.
+        </div>
+
+        <div class="wc-pagination" th:if="${totalPages > 0}">
+            <a class="wc-btn ghost"
+               th:if="${currentPage > 0}"
+                    th:href="${'/home?page=' + (currentPage - 1) + '&keyword=' + keyword + '&sort=' + sort + (categoryId != null ? '&categoryId=' + categoryId : '')}">← Truoc</a>
+
+            <a class="wc-btn"
+               th:each="pageNumber : ${#numbers.sequence(0, totalPages - 1)}"
+               th:classappend="${pageNumber == currentPage} ? ' ghost' : ''"
+               th:text="${pageNumber + 1}"
+                    th:href="${'/home?page=' + pageNumber + '&keyword=' + keyword + '&sort=' + sort + (categoryId != null ? '&categoryId=' + categoryId : '')}">1</a>
+
+            <a class="wc-btn ghost"
+               th:if="${currentPage < totalPages - 1}"
+               th:href="${'/home?page=' + (currentPage + 1) + '&keyword=' + keyword + '&sort=' + sort + (categoryId != null ? '&categoryId=' + categoryId : '')}">Sau →</a>
+        </div>
+    </section>
+</div>
+
+<a class="wc-cart-bubble" th:href="@{/cart}" data-cart-bubble="true" sec:authorize="hasRole('USER')" aria-label="Mo gio hang">
+    <span class="wc-cart-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 4H5L7.4 15.2C7.5 15.7 7.9 16 8.4 16H18.2C18.7 16 19.1 15.7 19.2 15.2L21 8H6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="9" cy="20" r="1.6" fill="currentColor"/>
+            <circle cx="18" cy="20" r="1.6" fill="currentColor"/>
+        </svg>
+    </span>
+    <span>Gio</span>
+</a>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

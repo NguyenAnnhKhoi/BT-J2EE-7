@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+    lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh mục</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <div class="wc-topbar">
+        <a class="wc-brand" th:href="@{/home}">Ban Hang Online</a>
+        <div class="wc-nav">
+            <a class="wc-chip" th:href="@{/home}">Home</a>
+            <a class="wc-chip" th:href="@{/products}">San pham</a>
+            <a class="wc-chip" th:href="@{/categories}">Danh mục</a>
+            <span class="wc-user" sec:authorize="isAuthenticated()">Xin chào, <b sec:authentication="name"></b></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;">
+                <button class="wc-chip" type="submit">Đăng xuất</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="wc-hero">
+        <h1 class="wc-title">Danh mục thương hiệu</h1>
+        <p class="wc-subtitle">Tổ chức hệ thống danh mục với bố cục tinh xảo, chuyển động mượt và nhịp điệu thị giác đẳng cấp.</p>
+    </section>
+
+    <section class="wc-panel">
+        <div class="wc-toolbar">
+            <div style="font-weight:600; color:#2a3f56;">Bảng quản trị danh mục</div>
+            <a class="wc-btn" th:href="@{/categories/new}" sec:authorize="hasRole('ADMIN')">+ Thêm danh mục</a>
+        </div>
+
+        <div class="wc-table-wrap">
+            <table class="wc-table">
+                <thead>
+                <tr>
+                    <th>Ma</th>
+                    <th>Tên danh mục</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c : ${categories}">
+                    <td th:text="${c.id}"></td>
+                    <td th:text="${c.name}"></td>
+                    <td>
+                        <div class="wc-actions">
+                            <a class="wc-btn" th:href="@{/categories/{id}/edit(id=${c.id})}" sec:authorize="hasRole('ADMIN')">Sửa</a>
+                            <a class="wc-btn danger" th:href="@{/categories/{id}/delete(id=${c.id})}" sec:authorize="hasRole('ADMIN')" onclick="return confirm('Xóa danh mục này?')">Xóa</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(categories)}">
+                    <td colspan="3" class="wc-empty">Chưa có danh mục nào</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

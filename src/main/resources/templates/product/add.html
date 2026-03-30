@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Them san pham</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <section class="wc-hero">
+        <h1 class="wc-title">Them san pham</h1>
+        <p class="wc-subtitle">Tao san pham moi voi thong tin day du.</p>
+    </section>
+
+    <section class="wc-panel">
+        <form th:action="@{/products/save}" th:object="${product}" method="post">
+            <div class="wc-form-grid">
+            <div class="wc-field full">
+                <label for="name">Ten san pham</label>
+                <input class="wc-input" style="width:100%;" type="text" th:field="*{name}" id="name" placeholder="Vi du: iPhone 15 Pro">
+            </div>
+            <div class="wc-field full">
+                <label for="image">Link ảnh</label>
+                <input class="wc-input" style="width:100%;" type="text" th:field="*{image}" id="image" placeholder="https://...">
+            </div>
+            <div class="wc-field">
+                <label for="price">Gia (VND)</label>
+                <input class="wc-input" style="width:100%;" type="number" step="0.01" th:field="*{price}" id="price" placeholder="VD: 19990000">
+            </div>
+            <div class="wc-field">
+                <label for="brand">Thuong hieu</label>
+                <input class="wc-input" style="width:100%;" type="text" th:field="*{brand}" id="brand" placeholder="VD: Apple">
+            </div>
+            <div class="wc-field full">
+                <label for="categoryId">Danh mục</label>
+                <select name="categoryId" class="wc-input" style="width:100%;" id="categoryId">
+                    <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}"></option>
+                </select>
+            </div>
+            </div>
+
+            <div class="wc-actions-end">
+                <button type="submit" class="wc-btn">Luu san pham</button>
+                <a th:href="@{/products}" class="wc-btn ghost">← Quay lai</a>
+            </div>
+        </form>
+    </section>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

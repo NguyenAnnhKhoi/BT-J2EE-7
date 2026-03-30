@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gio hang</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <div class="wc-topbar">
+        <a class="wc-brand" th:href="@{/home}">Ban Hang Online</a>
+        <div class="wc-nav">
+            <a class="wc-chip" th:href="@{/home}">Home</a>
+            <a class="wc-chip" th:href="@{/cart}">Gio hang</a>
+            <a class="wc-chip" th:href="@{/orders/my-orders}">Don hang cua toi</a>
+            <span class="wc-user" sec:authorize="isAuthenticated()">Xin chao, <b sec:authentication="name"></b></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;" sec:authorize="isAuthenticated()">
+                <button class="wc-chip" type="submit">Dang xuat</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="wc-hero">
+        <h1 class="wc-title">Gio hang cua ban</h1>
+        <p class="wc-subtitle">Kiem tra so luong, tong tien truoc khi dat hang.</p>
+    </section>
+
+    <section class="wc-panel">
+        <div class="wc-alert error" th:if="${param.checkoutError}">Khong the dat hang. Gio hang trong hoac du lieu san pham khong hop le.</div>
+
+        <div class="wc-table-wrap" th:if="${!#lists.isEmpty(cartItems)}">
+            <table class="wc-table">
+                <thead>
+                <tr>
+                    <th>San pham</th>
+                    <th>Gia</th>
+                    <th>So luong</th>
+                    <th>Tong</th>
+                    <th>Thao tac</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.product.name}">San pham</td>
+                    <td th:text="${#numbers.formatDecimal(item.product.price, 1, 'COMMA', 0, 'POINT') + ' VND'}">100,000 VND</td>
+                    <td>
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <form th:action="@{/cart/update/{id}(id=${item.product.id})}" method="post" style="display:inline;">
+                                <input type="hidden" name="quantity" th:value="${item.quantity - 1}">
+                                <button class="wc-btn ghost" type="submit" th:disabled="${item.quantity <= 1}">-</button>
+                            </form>
+
+                            <form th:action="@{/cart/update/{id}(id=${item.product.id})}" method="post" style="display:flex; gap:8px; align-items:center;">
+                                <input class="wc-input" type="number" name="quantity" min="1" th:value="${item.quantity}" style="max-width:88px;">
+                                <button class="wc-btn ghost" type="submit">Cap nhat</button>
+                            </form>
+
+                            <form th:action="@{/cart/update/{id}(id=${item.product.id})}" method="post" style="display:inline;">
+                                <input type="hidden" name="quantity" th:value="${item.quantity + 1}">
+                                <button class="wc-btn ghost" type="submit">+</button>
+                            </form>
+                        </div>
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(item.lineTotal, 1, 'COMMA', 0, 'POINT') + ' VND'}">200,000 VND</td>
+                    <td>
+                        <a class="wc-btn danger" th:href="@{/cart/remove/{id}(id=${item.product.id})}">Xoa</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="wc-empty" th:if="${#lists.isEmpty(cartItems)}">
+            Gio hang dang trong. Hay them san pham tu trang Home.
+        </div>
+
+        <div class="wc-toolbar" style="margin-top:16px;" th:if="${!#lists.isEmpty(cartItems)}">
+            <div class="wc-summary">Tong don tam tinh: <b th:text="${#numbers.formatDecimal(cartTotal, 1, 'COMMA', 0, 'POINT') + ' VND'}">0 VND</b></div>
+            <a class="wc-btn" th:href="@{/checkout}">Dat hang</a>
+        </div>
+    </section>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

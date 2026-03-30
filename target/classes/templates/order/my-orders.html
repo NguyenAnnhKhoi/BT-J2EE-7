@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don hang cua toi</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <div class="wc-topbar">
+        <a class="wc-brand" th:href="@{/home}">Ban Hang Online</a>
+        <div class="wc-nav">
+            <a class="wc-chip" th:href="@{/home}">Home</a>
+            <a class="wc-chip" th:href="@{/products}" sec:authorize="hasRole('ADMIN')">San pham</a>
+            <a class="wc-chip" th:href="@{/cart}">Gio hang</a>
+            <a class="wc-chip" th:href="@{/orders/my-orders}" sec:authorize="hasRole('USER')">Don hang cua toi</a>
+            <a class="wc-chip" th:href="@{/admin/orders}" sec:authorize="hasRole('ADMIN')">Quan ly don hang</a>
+            <span class="wc-user" sec:authorize="isAuthenticated()">Xin chao, <b sec:authentication="name"></b></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;" sec:authorize="isAuthenticated()">
+                <button class="wc-chip" type="submit">Dang xuat</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="wc-hero">
+        <h1 class="wc-title">Don hang cua toi</h1>
+        <p class="wc-subtitle">Danh sach san pham ban da dat mua.</p>
+    </section>
+
+    <section class="wc-panel">
+        <div class="wc-alert success" th:if="${fromSuccess}">
+            Dat hang thanh cong. Don vua tao da duoc dua vao danh sach de theo doi.
+        </div>
+
+        <div class="wc-table-wrap" th:if="${!#lists.isEmpty(orders)}">
+            <table class="wc-table">
+                <thead>
+                <tr>
+                    <th>Ma don</th>
+                    <th>Ngay dat</th>
+                    <th>Trang thai don</th>
+                    <th>Thanh toan</th>
+                    <th>Ten san pham</th>
+                    <th>Gia</th>
+                    <th>So luong</th>
+                    <th>Thanh tien</th>
+                    <th>Tong don</th>
+                </tr>
+                </thead>
+                <tbody>
+                <th:block th:each="o : ${orders}" th:if="${!#lists.isEmpty(o.orderDetails)}">
+                    <tr th:id="${'order-' + o.id}" th:style="${selectedOrderId != null and selectedOrderId == o.id} ? 'outline:2px solid #153a63;background:#f2f8ff;' : ''">
+                        <td th:text="${o.id}" th:rowspan="${#lists.size(o.orderDetails)}">1</td>
+                        <td th:text="${o.orderDate}" th:rowspan="${#lists.size(o.orderDetails)}">2026-03-23</td>
+                        <td th:text="${o.paymentStatus}" th:rowspan="${#lists.size(o.orderDetails)}">PENDING_CONFIRMATION</td>
+                        <td th:text="${o.paymentMethod}" th:rowspan="${#lists.size(o.orderDetails)}">COD</td>
+                        <td th:text="${o.orderDetails[0].product.name}">Ten san pham</td>
+                        <td th:text="${#numbers.formatDecimal(o.orderDetails[0].unitPrice, 1, 'COMMA', 0, 'POINT') + ' VND'}">2,000,000 VND</td>
+                        <td th:text="${o.orderDetails[0].quantity}">1</td>
+                        <td th:text="${#numbers.formatDecimal(o.orderDetails[0].lineTotal, 1, 'COMMA', 0, 'POINT') + ' VND'}">2,000,000 VND</td>
+                        <td th:text="${#numbers.formatDecimal(o.totalAmount, 1, 'COMMA', 0, 'POINT') + ' VND'}" th:rowspan="${#lists.size(o.orderDetails)}">2,000,000 VND</td>
+                    </tr>
+                    <tr th:each="d,iter : ${o.orderDetails}" th:if="${iter.index > 0}">
+                        <td th:text="${d.product.name}">Ten san pham</td>
+                        <td th:text="${#numbers.formatDecimal(d.unitPrice, 1, 'COMMA', 0, 'POINT') + ' VND'}">2,000,000 VND</td>
+                        <td th:text="${d.quantity}">1</td>
+                        <td th:text="${#numbers.formatDecimal(d.lineTotal, 1, 'COMMA', 0, 'POINT') + ' VND'}">2,000,000 VND</td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="wc-empty" th:if="${#lists.isEmpty(orders)}">
+            Ban chua co don hang nao.
+        </div>
+    </section>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

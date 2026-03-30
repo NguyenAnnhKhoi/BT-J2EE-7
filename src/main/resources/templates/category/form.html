@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Form danh mục</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <section class="wc-hero">
+        <h1 class="wc-title" th:text="${pageTitle}">Form danh mục</h1>
+        <p class="wc-subtitle">Thiết lập danh mục với biểu mẫu tối giản, tinh tế và dễ thao tác.</p>
+    </section>
+
+    <section class="wc-panel">
+        <form th:action="@{/categories/save}" th:object="${category}" method="post">
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="wc-field full" style="margin-bottom: 12px;">
+                <label>Tên danh mục *</label>
+                <input class="wc-input" style="width:100%;" type="text" th:field="*{name}" placeholder="VD: Dien tu"/>
+                <span style="color:#a93535; font-size:13px;" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+            </div>
+
+            <div class="wc-actions-end">
+                <button class="wc-btn" type="submit">Lưu</button>
+                <a class="wc-btn ghost" th:href="@{/categories}">← Quay lại</a>
+            </div>
+        </form>
+    </section>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+ 
+</body>
+</html>

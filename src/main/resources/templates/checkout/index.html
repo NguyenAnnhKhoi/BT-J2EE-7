@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dat hang</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-shell">
+    <div class="wc-topbar">
+        <a class="wc-brand" th:href="@{/home}">Ban Hang Online</a>
+        <div class="wc-nav">
+            <a class="wc-chip" th:href="@{/home}">Home</a>
+            <a class="wc-chip" th:href="@{/cart}">Gio hang</a>
+            <a class="wc-chip" th:href="@{/orders/my-orders}">Don hang cua toi</a>
+            <span class="wc-user" sec:authorize="isAuthenticated()">Xin chao, <b sec:authentication="name"></b></span>
+            <form th:action="@{/logout}" method="post" style="display:inline;" sec:authorize="isAuthenticated()">
+                <button class="wc-chip" type="submit">Dang xuat</button>
+            </form>
+        </div>
+    </div>
+
+    <section class="wc-hero">
+        <h1 class="wc-title">Dat hang</h1>
+        <p class="wc-subtitle">Nhap thong tin giao hang va xac nhan dat hang.</p>
+    </section>
+
+    <section class="wc-panel">
+        <div class="wc-alert error" th:if="${checkoutError}">Khong the dat hang. Vui long thu lai.</div>
+
+        <div class="wc-table-wrap" style="margin-bottom:16px;">
+            <table class="wc-table">
+                <thead>
+                <tr>
+                    <th>San pham</th>
+                    <th>Gia</th>
+                    <th>So luong</th>
+                    <th>Thanh tien</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${cartItems}">
+                    <td th:text="${item.product.name}">San pham</td>
+                    <td th:text="${#numbers.formatDecimal(item.product.price, 1, 'COMMA', 0, 'POINT') + ' VND'}">100,000 VND</td>
+                    <td th:text="${item.quantity}">1</td>
+                    <td th:text="${#numbers.formatDecimal(item.lineTotal, 1, 'COMMA', 0, 'POINT') + ' VND'}">100,000 VND</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="wc-toolbar" style="margin-bottom:14px;">
+            <div class="wc-summary">Tong don tam tinh: <b th:text="${#numbers.formatDecimal(cartTotal, 1, 'COMMA', 0, 'POINT') + ' VND'}">0 VND</b></div>
+        </div>
+
+        <form th:action="@{/cart/checkout}" th:object="${checkoutForm}" method="post">
+            <div class="wc-form-grid">
+                <div class="wc-field full">
+                    <label for="receiverName">Ho ten nguoi nhan</label>
+                    <input class="wc-input" id="receiverName" th:field="*{receiverName}" type="text" placeholder="Nguyen Van A">
+                    <div class="wc-alert error" th:if="${#fields.hasErrors('receiverName')}" th:errors="*{receiverName}"></div>
+                </div>
+
+                <div class="wc-field">
+                    <label for="receiverPhone">So dien thoai</label>
+                    <input class="wc-input" id="receiverPhone" th:field="*{receiverPhone}" type="text" placeholder="0901234567">
+                    <div class="wc-alert error" th:if="${#fields.hasErrors('receiverPhone')}" th:errors="*{receiverPhone}"></div>
+                </div>
+
+                <div class="wc-field">
+                    <label for="paymentMethod">Hinh thuc thanh toan</label>
+                    <select class="wc-input" id="paymentMethod" th:field="*{paymentMethod}">
+                        <option value="COD">COD - Thanh toan khi nhan hang</option>
+                        <option value="BANKING">Chuyen khoan ngan hang</option>
+                        <option value="EWALLET">Vi dien tu</option>
+                    </select>
+                    <div class="wc-alert error" th:if="${#fields.hasErrors('paymentMethod')}" th:errors="*{paymentMethod}"></div>
+                </div>
+
+                <div class="wc-field full">
+                    <label for="shippingAddress">Dia chi giao hang</label>
+                    <input class="wc-input" id="shippingAddress" th:field="*{shippingAddress}" type="text" placeholder="So nha, duong, phuong/xa, quan/huyen, tinh/thanh pho">
+                    <div class="wc-alert error" th:if="${#fields.hasErrors('shippingAddress')}" th:errors="*{shippingAddress}"></div>
+                </div>
+
+                <div class="wc-field full">
+                    <label for="note">Ghi chu</label>
+                    <input class="wc-input" id="note" th:field="*{note}" type="text" placeholder="Giao gio hanh chinh, goi truoc khi giao...">
+                </div>
+            </div>
+
+            <div class="wc-actions-end" style="margin-top:14px;">
+                <a class="wc-btn ghost" th:href="@{/cart}">Quay lai gio hang</a>
+                <button class="wc-btn" type="submit">Dat hang</button>
+            </div>
+        </form>
+    </section>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>

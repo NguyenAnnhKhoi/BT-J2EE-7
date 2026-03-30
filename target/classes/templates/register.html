@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dang ky tai khoan khach hang</title>
+    <link rel="stylesheet" th:href="@{/css/worldclass.css}">
+</head>
+<body class="worldclass">
+<div class="wc-login">
+    <h2>Dang ky khach hang</h2>
+    <p class="wc-subtle">Tao tai khoan moi voi quyen mac dinh USER.</p>
+
+    <form th:action="@{/register}" th:object="${registerForm}" method="post">
+        <div class="wc-field" style="margin-bottom:12px;">
+            <label for="username">Username</label>
+            <input class="wc-input" type="text" id="username" th:field="*{username}" required>
+            <div class="wc-alert error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+        </div>
+
+        <div class="wc-field" style="margin-bottom:12px;">
+            <label for="password">Password</label>
+            <input class="wc-input" type="password" id="password" th:field="*{password}" required>
+            <div class="wc-alert error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+        </div>
+
+        <div class="wc-field" style="margin-bottom:14px;">
+            <label for="email">Email</label>
+            <input class="wc-input" type="email" id="email" th:field="*{email}" required>
+            <div class="wc-alert error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+        </div>
+
+        <button class="wc-btn" type="submit" style="width:100%;">Dang ky</button>
+    </form>
+
+    <div class="wc-auth-link" style="margin-top:14px;">
+        <a class="wc-btn ghost" th:href="@{/login}">Da co tai khoan? Dang nhap</a>
+    </div>
+</div>
+<script th:src="@{/js/worldclass.js}"></script>
+</body>
+</html>
